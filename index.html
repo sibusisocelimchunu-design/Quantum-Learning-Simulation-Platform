@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum Computing Learning & Simulation Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=2">
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<header>
+  <nav class="navbar">
+    <div class="logo">Quantum Learning Platform</div>
+    <button id="navToggle" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#home">Home</a><a href="#qubit">Qubit Simulator</a><a href="#gates">Gates</a>
+      <a href="#entanglement">Entanglement</a><a href="#algorithms">Algorithms</a>
+      <a href="#technologies">Technologies</a><a href="#quiz">Knowledge Check</a>
+       <a href="#" class="nav-reset" onclick="resetAll(); return false;">🔄 Reset Platform</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+<section id="home" class="hero">
+  <div>
+    <span class="badge">⚛ Quantum · Interactive · Beginner Friendly</span>
+    <h1>Quantum Computing Learning &amp; Simulation Platform</h1>
+    <p>Understand qubits, gates, entanglement and quantum algorithms through live
+       simulations, real probability mathematics and interactive visualisations.</p>
+    <div class="button-group" style="justify-content:center">
+      <a class="btn" href="#qubit">Start Learning</a>
+      <a class="btn secondary" href="#quiz">Test Your Knowledge</a>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <h2>What You Will Learn</h2>
+  <p class="lead">Core quantum computing concepts, built step by step with live simulations and real quantum mathematics.</p>
+  <div class="grid">
+    <div class="card"><h3>🔮 Qubits &amp; Superposition</h3><p>How quantum information lives in |0⟩, |1⟩ and blends of both — described by amplitudes α and β.</p></div>
+    <div class="card"><h3>🎛 Quantum Gates</h3><p>How X, H and Z transform qubit states, with the actual matrices behind each gate.</p></div>
+    <div class="card"><h3>🔗 Entanglement</h3><p>The Bell state |Φ⁺⟩ and why measurement outcomes are perfectly correlated.</p></div>
+    <div class="card"><h3>⚡ Quantum Algorithms</h3><p>How Deutsch's algorithm beats any classical approach using interference.</p></div>
+  </div>
+</section>
+
+<section id="qubit" class="section reveal">
+  <h2>1. Qubit Simulator</h2>
+  <p class="lead">A qubit is the basic unit of quantum information. It can be |0⟩, |1⟩, or a superposition |ψ⟩ = α|0⟩ + β|1⟩.</p>
+  <div class="card">
+    <h3>Interactive Simulator</h3>
+    <p class="lead">Set a state or apply gates, then watch the Bloch diagram, amplitudes and charts update live.</p>
+    <div class="button-group">
+      <button class="btn" onclick="setQubitState('0')">Set |0⟩</button>
+      <button class="btn" onclick="setQubitState('1')">Set |1⟩</button>
+      <button class="btn" onclick="setQubitState('+')">Set |+⟩</button>
+      <button class="btn secondary" onclick="measureQubit()">📷 Measure Qubit</button>
+      <button class="btn secondary" onclick="runShots()">Run 100 Shots</button>
+      <button class="btn secondary" onclick="resetQubit()">🔄 Reset</button>
+    </div>
+    <div class="sim-grid">
+      <div>
+        <div class="result-box">
+          <p id="qubit-state"><strong>Current State: |0⟩</strong></p>
+          <p id="qubit-amps">|ψ⟩ = 1|0⟩ + 0|1⟩</p>
+          <p id="measure-result">Measurement results will appear here.</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><span>Probability of |0⟩</span><strong id="stat-p0">100%</strong></div>
+          <div class="stat"><span>Probability of |1⟩</span><strong id="stat-p1">0%</strong></div>
+        </div>
+      </div>
+      <canvas id="bloch" width="340" height="340"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Theory Probabilities (Born Rule)</h3>
+      <canvas id="qubitChart" height="120"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Measurement Histogram — 100 Shots</h3>
+      <p class="lead" style="font-size:.9rem">Each shot prepares a fresh copy of the current state and measures it.</p>
+      <canvas id="shotsChart" height="120"></canvas>
+    </div>
+    <div class="fact"><strong>📌 Key idea (Born rule):</strong> for |ψ⟩ = α|0⟩ + β|1⟩, the probability of measuring |0⟩ is |α|² and of |1⟩ is |β|². The amplitudes can be negative or complex — but probabilities never are.</div>
+  </div>
+</section>
+
+<section id="gates" class="section reveal">
+  <h2>2. Quantum Gates</h2>
+  <p class="lead">Gates are reversible operations that transform qubit states. These controls share the <strong>same live qubit</strong> as Section 1.</p>
+  <div class="card">
+    <h3>Apply a Gate</h3>
+    <div class="button-group">
+      <button class="btn" onclick="applyGateToState('X')">Apply X Gate</button>
+      <button class="btn" onclick="applyGateToState('H')">Apply H Gate</button>
+      <button class="btn" onclick="applyGateToState('Z')">Apply Z Gate</button>
+            <button class="btn secondary" onclick="resetGates()">🔄 Reset</button>
+    </div>
+    <div class="transition">
+      <div class="ketbox"><span>Before</span><strong id="before-state">|0⟩</strong></div>
+      <div class="arrow">→</div>
+      <div class="ketbox"><span>After</span><strong id="after-state">|0⟩</strong></div>
+    </div>
+    <div class="result-box"><p id="gate-result">Select a gate to begin.</p></div>
+    <div class="grid">
+      <div class="card gate-card"><div class="gate-symbol">X</div><h3>X — Quantum NOT</h3><p>Swaps |0⟩ and |1⟩.</p><strong>X|0⟩ = |1⟩</strong><br><span class="matrix">X = [[0,1],[1,0]]</span></div>
+      <div class="card gate-card"><div class="gate-symbol">H</div><h3>H — Hadamard</h3><p>Creates superposition — the heart of quantum parallelism.</p><strong>H|0⟩ = |+⟩</strong><br><span class="matrix">H = 1/√2 [[1,1],[1,−1]]</span></div>
+      <div class="card gate-card"><div class="gate-symbol">Z</div><h3>Z — Phase Flip</h3><p>Flips the sign of the |1⟩ component without changing basis-state probabilities.</p><strong>Z|1⟩ = −|1⟩</strong><br><span class="matrix">Z = [[1,0],[0,−1]]</span></div>
+    </div>
+    <div class="fact"><strong>📌 Why it matters:</strong> quantum algorithms are just clever sequences of these gates, arranged so that wrong answers <em>interfere destructively</em> and right answers <em>interfere constructively</em>.</div>
+  </div>
+</section>
+
+<section id="entanglement" class="section reveal">
+  <h2>3. Quantum Entanglement</h2>
+  <p class="lead">Entangled qubits share a joint state that cannot be described independently — measuring one instantly tells you about the other.</p>
+  <div class="card">
+    <h3>Bell State Demonstration</h3>
+    <p>Create the Bell state: <strong>|Φ⁺⟩ = (|00⟩ + |11⟩)/√2</strong></p>
+    <div class="button-group">
+      <button class="btn" onclick="createBellState()">Create Bell State</button>
+      <button class="btn secondary" id="btn-bell-measure" onclick="measureBellShots()" disabled>Measure 100 Pairs</button>
+            <button class="btn secondary" onclick="resetBell()">🔄 Reset</button>
+    </div>
+    <div class="result-box"><p id="bell-result">Click "Create Bell State" to begin.</p></div>
+    <p id="bell-samples" class="lead" style="font-size:.9rem"></p>
+    <div class="chart-box">
+      <h3>Two-Qubit Outcome Probabilities</h3>
+      <canvas id="bellChart" height="140"></canvas>
+    </div>
+    <div class="fact"><strong>📌 What to notice:</strong> outcomes |01⟩ and |10⟩ <em>never</em> occur. The qubits are perfectly correlated — this is what Einstein called "spooky action at a distance", and it's a real resource used in quantum teleportation and cryptography.</div>
+  </div>
+</section>
+
+<section id="algorithms" class="section reveal">
+  <h2>4. Deutsch's Algorithm</h2>
+  <p class="lead">Given a mystery function f(x), is it <strong>constant</strong> (always the same output) or <strong>balanced</strong> (equal 0s and 1s)? Classically you need <em>two</em> evaluations. Quantumly: <strong>one</strong>.</p>
+  <div class="card">
+    <h3>Run the Algorithm</h3>
+    <div class="asteps">
+      <div class="astep"><div class="step-num">1</div><h4>Prepare</h4><p>Initialise two qubits and put them into superposition with H gates.</p></div>
+      <div class="astep"><div class="step-num">2</div><h4>Oracle</h4><p>Query f(x) <strong>once</strong> — its answer is encoded as a phase (phase kickback).</p></div>
+      <div class="astep"><div class="step-num">3</div><h4>Interference</h4><p>Another H gate makes amplitudes interfere, amplifying the global property.</p></div>
+      <div class="astep"><div class="step-num">4</div><h4>Measure</h4><p>Result |0⟩ ⇒ constant. Result |1⟩ ⇒ balanced. Guaranteed, every run.</p></div>
+    </div>
+    <div class="button-group">
+      <select id="algo-type">
+        <option value="random">🎲 Random function (recommended)</option>
+        <option value="constant">Constant function</option>
+        <option value="balanced">Balanced function</option>
+      </select>
+      <button class="btn" onclick="runAlgorithm()">▶ Run Algorithm</button>
+      <button class="btn secondary" onclick="resetAlgorithm()">🔄 Reset</button>
+    </div>
+    <div class="result-box"><p id="algo-result">Choose a function type and press Run.</p></div>
+    <div class="chart-box"><h3>Measurement Results — 10 Runs</h3><canvas id="algoChart" height="120"></canvas></div>
+  </div>
+</section>
+
+<section id="technologies" class="section reveal">
+  <h2>5. Qubit Technologies</h2>
+  <p class="lead">Different physical systems can realise qubits — each with different trade-offs.</p>
+  <div class="grid">
+    <div class="card"><h3>❄️ Superconducting</h3><p>Microwave circuits of Josephson junctions. Fastest gates; used by <strong>IBM</strong> and <strong>Google</strong>.</p></div>
+    <div class="card"><h3>⚡ Trapped Ion</h3><p>Ions suspended in electromagnetic fields, manipulated with lasers. Very long coherence; used by <strong>IonQ</strong>, <strong>Quantinuum</strong>.</p></div>
+    <div class="card"><h3>💡 Photonic</h3><p>Qubits encoded in particles of light at room temperature; used by <strong>Xanadu</strong>, <strong>PsiQuantum</strong>.</p></div>
+    <div class="card"><h3>🔬 Neutral Atom</h3><p>Arrays of atoms trapped by laser tweezers; highly scalable; used by <strong>QuEra</strong>, <strong>Pasqal</strong>.</p></div>
+  </div>
+  <div class="card table-wrap" style="margin-top:18px">
+    <table>
+      <tr><th>Technology</th><th>Operating Temperature</th><th>Typical Gate Speed</th><th>Strength</th></tr>
+      <tr><td>Superconducting</td><td>~15 millikelvin (colder than space)</td><td>~10–50 ns</td><td>Speed, fabrication</td></tr>
+      <tr><td>Trapped Ion</td><td>Ions laser-cooled, chamber near room temp</td><td>~10–100 µs</td><td>Fidelity, coherence</td></tr>
+      <tr><td>Photonic</td><td>Room temperature</td><td>~ns (optical)</td><td>Networking, no cooling</td></tr>
+      <tr><td>Neutral Atom</td><td>Room temperature + lasers</td><td>~µs</td><td>Scalable arrays (1000+ atoms)</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="quiz" class="section reveal">
+  <h2>6. Knowledge Check</h2>
+  <p class="lead">5 random questions from a bank of 10 — instant feedback, explanations, and a fresh set every retry.</p>
+  <div class="card">
+    <h3>Quantum Computing Quiz</h3>
+    <div id="quiz-body"><p>Click <strong>Start Quiz</strong> to begin. Score out of 5.</p></div>
+    <div class="button-group">
+      <button class="btn" id="btn-quiz" onclick="startQuiz()">Start Quiz</button>
+      <button class="btn secondary" onclick="resetQuiz()">🔄 Reset Quiz</button>
+    </div>
+  </div>
+  <div class="card" id="quiz-results-card" hidden style="margin-top:18px">
+    <h3>Your Results</h3>
+    <div class="sim-grid">
+      <canvas id="quizChart" width="260" height="260"></canvas>
+      <div id="quiz-review"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>Quantum Computing Learning &amp; Simulation Platform</strong></p>
+  <p>Sol Plaatje University · Computer Science &amp; IT · Capstone Project</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+        onerror="var s=document.createElement('script');s.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.min.js';document.head.appendChild(s);"></script>
+<script src="js/boot.js?v=2"></script>
+<script src="js/app.js?v=2"></script>
+<script src="js/qubit.js?v=2"></script>
+<script src="js/gates.js?v=2"></script>
+<script src="js/entanglement.js?v=2"></script>
+<script src="js/algorithms.js?v=2"></script>
+<script src="js/quiz.js?v=2"></script>
+
+</body>
+</html>
