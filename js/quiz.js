@@ -64,6 +64,7 @@ function pickAnswer(i, btn) {
 function nextQuestion() { qi++; if (qi < 5) renderQuestion(); else showQuizResults(); }
 
 function showQuizResults() {
+  qhSave(score);
   const msg = score === 5 ? '🏆 Perfect score! You are officially quantum-literate.'
     : score === 4 ? '🌟 Excellent — you clearly understand the fundamentals.'
     : score === 3 ? '👍 Good effort — review the sections above and try again.'
@@ -82,4 +83,33 @@ function showQuizResults() {
   $('btn-quiz').style.display = '';
   $('quiz-results-card').hidden = false;
   $('quiz-results-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* =========================================================
+   Persistent round history — localStorage. Survives page
+   refreshes; graceful no-op if storage is unavailable.
+   ========================================================= */
+function qhLoad() {
+  try { return JSON.parse(localStorage.getItem('qlp_history') || '[]'); } catch (e) { return []; }
+}
+function qhSave(score) {
+  const h = qhLoad();
+  h.push({ d: new Date().toLocaleDateString(), s: score });
+  try { localStorage.setItem('qlp_history', JSON.stringify(h)); } catch (e) {}
+  qhRenderStats();
+}
+function qhRenderStats() {
+  const h = qhLoad(), el = $('quiz-stats');
+  if (!el) return;
+  if (!h.length) { el.textContent = 'No rounds played yet — your history will appear here.'; return; }
+  const best = Math.max(...h.map(r => r.s));
+  const avg = (h.reduce((t, r) => t + r.s, 0) / h.length).toFixed(1);
+  el.innerHTML = '📚 Rounds played: <strong>' + h.length + '</strong> · Personal best: <strong>' + best + '/5</strong> · Average: <strong>' + avg + '/5</strong>';
+}
+qhRenderStats();
+
+function qhClear() {
+  if (!confirm('Clear all quiz history? This cannot be undone.')) return;
+  try { localStorage.removeItem('qlp_history'); } catch (e) {}
+  qhRenderStats();
 }
