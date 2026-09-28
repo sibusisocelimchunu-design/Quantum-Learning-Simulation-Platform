@@ -32,3 +32,27 @@ function applyGateToState(g) {
 
   refresh();
 }
+
+/* =========================================================
+   RY rotation — the CONTINUOUS gate.
+   RY(θ): |0⟩ → cos(θ/2)|0⟩ + sin(θ/2)|1⟩ — a real rotation
+   matrix applied with the slider's change in angle (Δθ).
+   ========================================================= */
+let ryPrev = 0;
+function resetRY() {
+  ryPrev = 0;
+  const sl = $('ry-slider'); if (sl) sl.value = 0;
+  const lb = $('ry-deg'); if (lb) lb.textContent = '0';
+}
+function ryOnInput(val) {
+  const deg = Number(val), delta = deg - ryPrev;
+  ryPrev = deg;
+  $('ry-deg').textContent = deg;
+  if (delta !== 0) {
+    const t = delta * Math.PI / 180, c = Math.cos(t / 2), s = Math.sin(t / 2);
+    const a = S.a, b = S.b;
+    S.a = c * a - s * b;
+    S.b = s * a + c * b;
+    refresh();
+  }
+}

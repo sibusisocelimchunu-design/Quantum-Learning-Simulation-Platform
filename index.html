@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quantum Computing Learning & Simulation Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
 
@@ -17,13 +17,14 @@
     <button id="navToggle" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="#home">Home</a><a href="#qubit">Qubit Simulator</a><a href="#gates">Gates</a>
+      <a href="#challenge">Challenge</a>
       <a href="#entanglement">Entanglement</a><a href="#algorithms">Algorithms</a>
+      <a href="#grover">Grover's Search</a>
       <a href="#technologies">Technologies</a><a href="#quiz">Knowledge Check</a>
        <a href="#" class="nav-reset" onclick="resetAll(); return false;">🔄 Reset Platform</a>
     </div>
   </nav>
 </header>
-
 <main>
 
 <section id="home" class="hero">
@@ -100,6 +101,11 @@
       <button class="btn" onclick="applyGateToState('X')">Apply X Gate</button>
       <button class="btn" onclick="applyGateToState('H')">Apply H Gate</button>
       <button class="btn" onclick="applyGateToState('Z')">Apply Z Gate</button>
+      <div style="width:100%;margin-top:8px">
+        <label for="ry-slider">RY rotation — θ = <strong id="ry-deg">0</strong>° (drag: the needle rotates <em>continuously</em>)</label>
+        <input type="range" id="ry-slider" min="0" max="360" value="0" style="width:100%" oninput="ryOnInput(this.value)">
+      </div>
+
             <button class="btn secondary" onclick="resetGates()">🔄 Reset</button>
     </div>
     <div class="transition">
@@ -114,6 +120,36 @@
       <div class="card gate-card"><div class="gate-symbol">Z</div><h3>Z — Phase Flip</h3><p>Flips the sign of the |1⟩ component without changing basis-state probabilities.</p><strong>Z|1⟩ = −|1⟩</strong><br><span class="matrix">Z = [[1,0],[0,−1]]</span></div>
     </div>
     <div class="fact"><strong>📌 Why it matters:</strong> quantum algorithms are just clever sequences of these gates, arranged so that wrong answers <em>interfere destructively</em> and right answers <em>interfere constructively</em>.</div>
+  </div>
+</section>
+
+<!-- CHALLENGE MODE -->
+<section id="challenge" class="section reveal">
+  <h2>Challenge Mode</h2>
+  <p class="lead">A mystery target state is shown. Transform |0⟩ into it using X, H and Z — you get the probabilities, not the recipe.</p>
+  <div class="card">
+    <div class="sim-grid">
+      <div>
+        <h3>🎯 Target state</h3>
+        <div class="result-box"><p id="ch-target">Press "🎲 New Challenge" to start.</p></div>
+        <h3>Your current state</h3>
+        <div class="result-box">
+          <p id="ch-current">|0⟩</p>
+          <p id="ch-attempts">Attempts: 0 · Solved: 0</p>
+        </div>
+      </div>
+      <div>
+        <h3>Controls</h3>
+        <div class="button-group">
+          <button class="btn" onclick="chNew()">🎲 New Challenge</button>
+          <button class="btn secondary" onclick="chApply('X')">X</button>
+          <button class="btn secondary" onclick="chApply('H')">H</button>
+          <button class="btn secondary" onclick="chApply('Z')">Z</button>
+          <button class="btn secondary" onclick="chReset()">↺ |0⟩</button>
+        </div>
+        <div id="ch-feedback" class="result-box" hidden></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -163,8 +199,32 @@
   </div>
 </section>
 
+<!-- GROVER'S SEARCH -->
+<section id="grover" class="section reveal">
+  <h2>5. Grover's Search (2-Qubit)</h2>
+  <p class="lead">A mystery item hides among |00⟩, |01⟩, |10⟩, |11⟩. Classically: up to 3 checks. <strong>Grover: ONE oracle query</strong> — with certainty.</p>
+  <div class="card">
+    <div class="button-group">
+      <select id="grover-target">
+        <option value="rand">🎲 Random marked state</option>
+        <option value="0">Mark |00⟩</option>
+        <option value="1">Mark |01⟩</option>
+        <option value="2">Mark |10⟩</option>
+        <option value="3">Mark |11⟩</option>
+      </select>
+      <button class="btn" onclick="runGrover()">▶ Run Grover</button>
+    </div>
+    <div class="result-box"><p id="grover-result">Choose a marked state and press Run.</p></div>
+    <div class="chart-box">
+      <h3>State probabilities per step</h3>
+      <canvas id="groverChart" height="150"></canvas>
+    </div>
+    <div class="fact"><strong>📌 What to notice:</strong> the oracle flips the marked item's <em>phase</em> — probabilities stay 25/25/25/25, invisible to direct measurement! Then the diffusion step uses <em>interference</em> to amplify the marked state to 100%.</div>
+  </div>
+</section>
+
 <section id="technologies" class="section reveal">
-  <h2>5. Qubit Technologies</h2>
+  <h2>6. Qubit Technologies</h2>
   <p class="lead">Different physical systems can realise qubits — each with different trade-offs.</p>
   <div class="grid">
     <div class="card"><h3>❄️ Superconducting</h3><p>Microwave circuits of Josephson junctions. Fastest gates; used by <strong>IBM</strong> and <strong>Google</strong>.</p></div>
@@ -184,7 +244,7 @@
 </section>
 
 <section id="quiz" class="section reveal">
-  <h2>6. Knowledge Check</h2>
+  <h2>7. Knowledge Check</h2>
   <p class="lead">5 random questions from a bank of 10 — instant feedback, explanations, and a fresh set every retry.</p>
   <div class="card">
     <h3>Quantum Computing Quiz</h3>
@@ -212,13 +272,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
         onerror="var s=document.createElement('script');s.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.min.js';document.head.appendChild(s);"></script>
-<script src="js/boot.js?v=2"></script>
-<script src="js/app.js?v=2"></script>
-<script src="js/qubit.js?v=2"></script>
-<script src="js/gates.js?v=2"></script>
-<script src="js/entanglement.js?v=2"></script>
-<script src="js/algorithms.js?v=2"></script>
-<script src="js/quiz.js?v=2"></script>
+<script src="js/boot.js?v=3"></script>
+<script src="js/app.js?v=3"></script>
+<script src="js/qubit.js?v=3"></script>
+<script src="js/gates.js?v=3"></script>
+<script src="js/entanglement.js?v=3"></script>
+<script src="js/algorithms.js?v=3"></script>
+<script src="js/challenge.js?v=3"></script>
+<script src="js/grover.js?v=3"></script>
+<script src="js/quiz.js?v=3"></script>
 
 </body>
 </html>

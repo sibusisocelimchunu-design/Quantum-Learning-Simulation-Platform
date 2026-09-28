@@ -19,6 +19,7 @@ function stateLabel() {
 }
 
 function setQubitState(s) {
+  resetRY();
   const M = { '0': [1, 0], '1': [0, 1], '+': [Math.SQRT1_2, Math.SQRT1_2] }[s];
   S.a = M[0]; S.b = M[1]; refresh();
   $('measure-result').innerHTML =

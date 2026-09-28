@@ -57,11 +57,13 @@ document.querySelectorAll('#navLinks a').forEach(a =>
 
   /* ================= RESET CONTROLS ================= */
 function resetQubit() {
+  resetRY();
   S.a = 1; S.b = 0; refresh();
   if (charts.shots) { charts.shots.data.datasets[0].data = [0, 0]; charts.shots.update(); }
   $('measure-result').innerHTML = 'Measurement results will appear here.';
 }
 function resetGates() {
+  resetRY();
   S.a = 1; S.b = 0; refresh();
   $('before-state').textContent = '|0⟩';
   $('after-state').textContent = '|0⟩';
