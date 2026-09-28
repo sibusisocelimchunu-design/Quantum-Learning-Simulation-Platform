@@ -186,7 +186,7 @@ Manual black-box testing per module, plus physics invariant checks
 ## Academic Project
 
 Sol Plaatje University  
-Computer Science & IT  
+Mathematical & Computer Science
 Capstone Project  
 Student: Sibusiso Mchunu  
 Student Number: 202434049
