@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qubit Simulator — Quantum Learning Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=5">
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<header>
+  <nav class="navbar">
+    <div class="logo">Quantum Learning Platform</div>
+    <button id="navToggle" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="qubit.html" class="active">Qubit Simulator</a>
+      <a href="gates.html">Gates</a>
+      <a href="challenge.html">Challenge</a>
+      <a href="entanglement.html">Entanglement</a>
+      <a href="algorithms.html">Algorithms</a>
+      <a href="grover.html">Grover's Search</a>
+      <a href="lab.html">2-Qubit Lab</a>
+      <a href="technologies.html">Technologies</a>
+      <a href="quiz.html">Knowledge Check</a>
+      <a href="#" class="nav-reset" onclick="resetAll(); return false;">🔄 Reset</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+<section id="qubit" class="section reveal">
+  <h2>Qubit Simulator</h2>
+  <p class="lead">A qubit is the basic unit of quantum information. It can be |0⟩, |1⟩, or a superposition |ψ⟩ = α|0⟩ + β|1⟩.</p>
+  <div class="card">
+    <h3>Interactive Simulator</h3>
+    <p class="lead">Set a state or apply gates, then watch the Bloch diagram, amplitudes and charts update live.</p>
+    <div class="button-group">
+      <button class="btn" onclick="setQubitState('0')">Set |0⟩</button>
+      <button class="btn" onclick="setQubitState('1')">Set |1⟩</button>
+      <button class="btn" onclick="setQubitState('+')">Set |+⟩</button>
+      <button class="btn" onclick="setQubitState('-')">Set |−⟩</button>
+      <button class="btn" onclick="setQubitState('i')">Set |+i⟩</button>
+      <button class="btn secondary" onclick="measureQubit()">📷 Measure Qubit</button>
+      <button class="btn secondary" onclick="runShots()">Run 100 Shots</button>
+      <button class="btn secondary" onclick="resetQubit()">🔄 Reset</button>
+    </div>
+    <div class="sim-grid">
+      <div>
+        <div class="result-box">
+          <p id="qubit-state"><strong>Current State: |0⟩</strong></p>
+          <p id="qubit-amps">|ψ⟩ = 1|0⟩ + 0|1⟩</p>
+          <p id="measure-result">Measurement results will appear here.</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><span>Probability of |0⟩</span><strong id="stat-p0">100%</strong></div>
+          <div class="stat"><span>Probability of |1⟩</span><strong id="stat-p1">0%</strong></div>
+        </div>
+      </div>
+      <canvas id="bloch" width="360" height="380" style="touch-action:none"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Theory Probabilities (Born Rule)</h3>
+      <canvas id="qubitChart" height="120"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Measurement Histogram — 100 Shots</h3>
+      <p class="lead" style="font-size:.9rem">Each shot prepares a fresh copy of the current state and measures it.</p>
+      <canvas id="shotsChart" height="120"></canvas>
+    </div>
+    <div class="fact"><strong>📌 Key idea (Born rule):</strong> for |ψ⟩ = α|0⟩ + β|1⟩, the probability of measuring |0⟩ is |α|² and of |1⟩ is |β|². The amplitudes can be negative or complex — but probabilities never are.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>Quantum Computing Learning &amp; Simulation Platform</strong></p>
+  <p>Sol Plaatje University · Mathematical &amp; Computer Science · Capstone Project</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="js/boot.js?v=3"></script>
+<script src="js/app.js?v=5"></script>
+<script src="js/qubit.js?v=5"></script>
+</body>
+</html>
