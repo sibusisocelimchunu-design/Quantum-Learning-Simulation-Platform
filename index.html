@@ -18,8 +18,10 @@
     <div class="nav-links" id="navLinks">
       <a href="#home">Home</a><a href="#qubit">Qubit Simulator</a><a href="#gates">Gates</a>
       <a href="#challenge">Challenge</a>
-      <a href="#entanglement">Entanglement</a><a href="#algorithms">Algorithms</a>
+      <a href="#entanglement">Entanglement</a>
+      <a href="#algorithms">Algorithms</a>
       <a href="#grover">Grover's Search</a>
+      <a href="#lab">2-Qubit Lab</a> 
       <a href="#technologies">Technologies</a><a href="#quiz">Knowledge Check</a>
        <a href="#" class="nav-reset" onclick="resetAll(); return false;">🔄 Reset Platform</a>
     </div>
@@ -61,6 +63,8 @@
       <button class="btn" onclick="setQubitState('0')">Set |0⟩</button>
       <button class="btn" onclick="setQubitState('1')">Set |1⟩</button>
       <button class="btn" onclick="setQubitState('+')">Set |+⟩</button>
+      <button class="btn" onclick="setQubitState('-')">Set |−⟩</button>
+      <button class="btn" onclick="setQubitState('i')">Set |+i⟩</button>
       <button class="btn secondary" onclick="measureQubit()">📷 Measure Qubit</button>
       <button class="btn secondary" onclick="runShots()">Run 100 Shots</button>
       <button class="btn secondary" onclick="resetQubit()">🔄 Reset</button>
@@ -77,7 +81,7 @@
           <div class="stat"><span>Probability of |1⟩</span><strong id="stat-p1">0%</strong></div>
         </div>
       </div>
-      <canvas id="bloch" width="340" height="340"></canvas>
+      <canvas id="bloch" width="360" height="380" style="touch-action:none" ></canvas>
     </div>
     <div class="chart-box">
       <h3>Theory Probabilities (Born Rule)</h3>
@@ -101,6 +105,8 @@
       <button class="btn" onclick="applyGateToState('X')">Apply X Gate</button>
       <button class="btn" onclick="applyGateToState('H')">Apply H Gate</button>
       <button class="btn" onclick="applyGateToState('Z')">Apply Z Gate</button>
+       <button class="btn" onclick="applyGateToState('S')">Apply S Gate</button>
+      <button class="btn" onclick="applyGateToState('T')">Apply T Gate</button>
       <div style="width:100%;margin-top:8px">
         <label for="ry-slider">RY rotation — θ = <strong id="ry-deg">0</strong>° (drag: the needle rotates <em>continuously</em>)</label>
         <input type="range" id="ry-slider" min="0" max="360" value="0" style="width:100%" oninput="ryOnInput(this.value)">
@@ -118,6 +124,7 @@
       <div class="card gate-card"><div class="gate-symbol">X</div><h3>X — Quantum NOT</h3><p>Swaps |0⟩ and |1⟩.</p><strong>X|0⟩ = |1⟩</strong><br><span class="matrix">X = [[0,1],[1,0]]</span></div>
       <div class="card gate-card"><div class="gate-symbol">H</div><h3>H — Hadamard</h3><p>Creates superposition — the heart of quantum parallelism.</p><strong>H|0⟩ = |+⟩</strong><br><span class="matrix">H = 1/√2 [[1,1],[1,−1]]</span></div>
       <div class="card gate-card"><div class="gate-symbol">Z</div><h3>Z — Phase Flip</h3><p>Flips the sign of the |1⟩ component without changing basis-state probabilities.</p><strong>Z|1⟩ = −|1⟩</strong><br><span class="matrix">Z = [[1,0],[0,−1]]</span></div>
+      <div class="card gate-card"><div class="gate-symbol">S</div><h3>S — Phase Gate</h3><p>Rotates the phase of |1⟩ by 90° (π/2 radians).</p><strong>S|1⟩ = i|1⟩</strong><br><span class="matrix">S = [[1,0],[0,i]]</span></div>
     </div>
     <div class="fact"><strong>📌 Why it matters:</strong> quantum algorithms are just clever sequences of these gates, arranged so that wrong answers <em>interfere destructively</em> and right answers <em>interfere constructively</em>.</div>
   </div>
@@ -223,8 +230,41 @@
   </div>
 </section>
 
+<!-- TWO-QUBIT LAB -->
+<section id="lab" class="section reveal">
+  <h2>6. Two-Qubit Lab — build your own entanglement</h2>
+  <p class="lead">A real 4-amplitude state vector. Apply gates to each qubit — including the CNOT, the gate that turns superposition into correlation — and watch the entanglement meter. Can you construct a Bell state yourself?</p>
+  <div class="card">
+    <div class="button-group">
+      <button class="btn" onclick="labBuild()">⚡ Build Bell State (guided)</button>
+      <button class="btn secondary" onclick="labReset()">↺ Reset |00⟩</button>
+    </div>
+    <div class="button-group">
+      <button class="btn secondary" onclick="labGate('h1')">H on q1</button>
+      <button class="btn secondary" onclick="labGate('h2')">H on q2</button>
+      <button class="btn secondary" onclick="labGate('x1')">X on q1</button>
+      <button class="btn secondary" onclick="labGate('x2')">X on q2</button>
+      <button class="btn secondary" onclick="labGate('z1')">Z on q1</button>
+      <button class="btn secondary" onclick="labGate('z2')">Z on q2</button>
+      <button class="btn" onclick="labGate('cnot12')">CNOT (q1→q2)</button>
+      <button class="btn" onclick="labGate('cnot21')">CNOT (q2→q1)</button>
+      <button class="btn secondary" onclick="labMeasure()">📷 Measure</button>
+    </div>
+    <div class="result-box">
+      <p id="lab-state"><strong>|ψ⟩ = |00⟩</strong></p>
+      <p id="lab-ent">⬜ Separable — a product state; each qubit still has a life of its own.</p>
+      <p id="lab-msg"></p>
+    </div>
+    <div class="chart-box">
+      <h3>Four-state probabilities</h3>
+      <canvas id="labChart" height="150"></canvas>
+    </div>
+    <div class="fact"><strong>📌 Challenges:</strong> the magic sequence is H on q1, then CNOT. Notice CNOT alone on |00⟩ does <em>nothing</em> — a controlled flip needs a superposition to control. Entanglement = superposition + CNOT. And applying CNOT twice undoes itself — it's its own inverse!</div>
+  </div>
+</section>
+
 <section id="technologies" class="section reveal">
-  <h2>6. Qubit Technologies</h2>
+  <h2>7. Qubit Technologies</h2>
   <p class="lead">Different physical systems can realise qubits — each with different trade-offs.</p>
   <div class="grid">
     <div class="card"><h3>❄️ Superconducting</h3><p>Microwave circuits of Josephson junctions. Fastest gates; used by <strong>IBM</strong> and <strong>Google</strong>.</p></div>
@@ -244,7 +284,7 @@
 </section>
 
 <section id="quiz" class="section reveal">
-  <h2>7. Knowledge Check</h2>
+  <h2>8. Knowledge Check</h2>
   <p class="lead">5 random questions from a bank of 10 — instant feedback, explanations, and a fresh set every retry.</p>
   <div class="card">
     <h3>Quantum Computing Quiz</h3>
@@ -278,14 +318,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
         onerror="var s=document.createElement('script');s.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.min.js';document.head.appendChild(s);"></script>
 <script src="js/boot.js?v=3"></script>
-<script src="js/app.js?v=3"></script>
-<script src="js/qubit.js?v=3"></script>
-<script src="js/gates.js?v=3"></script>
+<script src="js/app.js?v=4"></script>
+<script src="js/qubit.js?v=4"></script>
+<script src="js/gates.js?v=4"></script>
 <script src="js/entanglement.js?v=3"></script>
 <script src="js/algorithms.js?v=3"></script>
 <script src="js/challenge.js?v=3"></script>
 <script src="js/grover.js?v=3"></script>
-<script src="js/quiz.js?v=4"></script>
+<script src="js/lab.js?v=3"></script>
+<script src="js/quiz.js?v=5"></script>
 
 </body>
 </html>  

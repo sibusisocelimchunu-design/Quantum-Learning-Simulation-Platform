@@ -1,58 +1,39 @@
 /* =========================================================
-   js/gates.js — X, H and Z gate mathematics.
-   These operate on the SAME live state vector (S) defined
-   in qubit.js, so the Bloch diagram and both charts stay in
-   sync across Sections 1 and 2.
+   js/gates.js — X, Z, S, T, H as complex matrix operations
+   on the shared state; RY continuous real rotation.
    ========================================================= */
-
-function applyGateToState(g) {
-  const before = stateLabel();
-
-  if (g === 'X') {                    // quantum NOT: swap amplitudes
-    const t = S.a; S.a = S.b; S.b = t;
+function applyGateToState(g){
+  const before=stateLabel();
+  if(g==='X'){const t=S.a;S.a=S.b;S.b=t;}
+  else if(g==='Z'){S.b={re:-S.b.re,im:-S.b.im};}
+  else if(g==='S'){S.b=C.mul(S.b,{re:0,im:1});}
+  else if(g==='T'){S.b=C.mul(S.b,{re:Math.SQRT1_2,im:Math.SQRT1_2});}
+  else if(g==='H'){
+    const t=C.add(S.a,S.b),u=C.sub(S.a,S.b);
+    S.a=C.scale(t,Math.SQRT1_2);S.b=C.scale(u,Math.SQRT1_2);
   }
-  else if (g === 'Z') {               // phase flip on |1>
-    S.b = -S.b;
-  }
-  else if (g === 'H') {               // Hadamard matrix multiplication
-    const a = (S.a + S.b) / Math.SQRT2;
-    const b = (S.a - S.b) / Math.SQRT2;
-    S.a = a; S.b = b;
-  }
-
-  const after = stateLabel();
-  $('before-state').textContent = before;
-  $('after-state').textContent = after;
-
-  $('gate-result').innerHTML = (before === after)
-    ? `<strong>${g}</strong> gate applied: <strong>${before}</strong> → <strong>${after}</strong>. ` +
-      `No visible change — for ${g === 'Z' ? 'basis states a phase flip has no measurable effect' : 'this input the gate acts trivially'}.`
-    : `<strong>${g}</strong> gate applied: <strong>${before}</strong> → <strong>${after}</strong>. ` +
-      `Probabilities updated below and in Section 1.`;
-
+  const after=stateLabel();
+  $('before-state').textContent=before;$('after-state').textContent=after;
+  const notes={
+    X:'the quantum NOT.',
+    H:'the superposition builder.',
+    Z:'a phase flip — probabilities unchanged, but watch the needle flip to the other side.',
+    S:'a 90° phase gate — probabilities unchanged, the needle sweeps a quarter way around the equator into 3D.',
+    T:'a 45° phase gate — the fine phase adjuster; probabilities unchanged, needle moves halfway to |+i⟩.'
+  };
+  $('gate-result').innerHTML='<strong>'+g+'</strong> applied: <strong>'+before+'</strong> → <strong>'+after+'</strong>. '+notes[g];
   refresh();
 }
 
-/* =========================================================
-   RY rotation — the CONTINUOUS gate.
-   RY(θ): |0⟩ → cos(θ/2)|0⟩ + sin(θ/2)|1⟩ — a real rotation
-   matrix applied with the slider's change in angle (Δθ).
-   ========================================================= */
-let ryPrev = 0;
-function resetRY() {
-  ryPrev = 0;
-  const sl = $('ry-slider'); if (sl) sl.value = 0;
-  const lb = $('ry-deg'); if (lb) lb.textContent = '0';
-}
-function ryOnInput(val) {
-  const deg = Number(val), delta = deg - ryPrev;
-  ryPrev = deg;
-  $('ry-deg').textContent = deg;
-  if (delta !== 0) {
-    const t = delta * Math.PI / 180, c = Math.cos(t / 2), s = Math.sin(t / 2);
-    const a = S.a, b = S.b;
-    S.a = c * a - s * b;
-    S.b = s * a + c * b;
+let ryPrev=0;
+function resetRY(){ryPrev=0;const s=$('ry-slider');if(s)s.value=0;const l=$('ry-deg');if(l)l.textContent='0';}
+function ryOnInput(val){
+  const deg=Number(val),d=deg-ryPrev;ryPrev=deg;
+  $('ry-deg').textContent=deg;
+  if(d!==0){
+    const t=d*Math.PI/180,c=Math.cos(t/2),s=Math.sin(t/2),A=S.a,B=S.b;
+    S.a={re:c*A.re-s*B.re,im:c*A.im-s*B.im};
+    S.b={re:s*A.re+c*B.re,im:s*A.im+c*B.im};
     refresh();
   }
 }
